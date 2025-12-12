@@ -1,9 +1,9 @@
-import './App.css';
+import Body from "./components/Body";
 
 function App() {
   return (
-    <div className="">
-      <h1 className=''>My Netflix Clone</h1>
+    <div>
+      <Body />
     </div>
   );
 }
