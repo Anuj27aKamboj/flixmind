@@ -43,7 +43,7 @@ const Header = () => {
   }, []);
 
   return (
-    <div className="absolute w-screen px-28 py-5 mx-auto bg-gradient-to-b from-black z-[1001] flex justify-between">
+    <div className="fixed top-0 w-screen px-28 py-5 mx-auto bg-gradient-to-b from-black z-[1001] flex justify-between">
       <img src="./appName.png" alt="app-name-logo" className="w-44 py-1 h-16 z-[1001]" />
 
       {/* User Profile */}
