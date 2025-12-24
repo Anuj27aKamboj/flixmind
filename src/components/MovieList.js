@@ -3,7 +3,7 @@ import MovieCard from "./MovieCard";
 
 const MovieList = ({ title, movies }) => {
   // if (!movies || movies.length === 0) return null;
-  console.log(movies);
+  // console.log(movies);
   return (
     <div className="relative z-10 p-10 pt-0 mb-5 text-white">
       <h2 className="text-xl font-bold mb-3">{title}</h2>

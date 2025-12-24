@@ -12,3 +12,9 @@ export const POPULAR_MOVIES_API = "https://api.themoviedb.org/3/movie/popular?pa
 
 export const IMG_CDN_URL = "https://image.tmdb.org/t/p/w200/";
 
+export const SUPPORRTED_LANGUAGES = [{identifier:"en", name:"English"},
+  {identifier:"hi", name:"Hindi"},
+  {identifier:"es", name:"Spanish"},
+  {identifier:"de", name:"German"},
+]
+

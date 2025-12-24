@@ -1,81 +1,110 @@
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import React, { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser, removeUser } from "../utils/userSlice";
+import { toggleGPTSearchView } from "../utils/gptSlice";
+import LanguageSelector from "./LanguageSelector";
 
 const Header = () => {
   const dispatch = useDispatch();
-  const [isUserActive, setIsUserActive] = useState(false);
   const navigate = useNavigate();
-
   const user = useSelector((store) => store.user);
+  const showGPTSearch = useSelector((store) => store.gpt.showGPTSearch);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef(null);
 
-  const handleUserActive = () => {
-    setIsUserActive(!isUserActive);
-  };
-
-  const handleSignOut = () => {
-    signOut(auth)
-      .then(() => {})
-      .catch((error) => {
-        navigate("/error");
-      });
-  };
-
+  /* ---------- Auth Listener ---------- */
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        // User signed in
         const { uid, email, displayName } = user;
-        dispatch(addUser({ uid: uid, email: email, displayName: displayName }));
+        dispatch(addUser({ uid, email, displayName }));
         navigate("/browse");
       } else {
-        // User is signed out
         dispatch(removeUser());
         navigate("/");
       }
     });
 
-    //Unsubscribe when component unmounts
     return () => unsubscribe();
   }, []);
 
-  return (
-    <div className="fixed top-0 w-screen px-28 py-5 mx-auto bg-gradient-to-b from-black z-[1001] flex justify-between">
-      <img src="./appName.png" alt="app-name-logo" className="w-44 py-1 h-16 z-[1001]" />
+  /* ---------- Outside Click Handler ---------- */
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setIsMenuOpen(false);
+      }
+    };
 
-      {/* User Profile */}
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  /* ---------- Handlers ---------- */
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {})
+      .catch(() => navigate("/error"));
+  };
+
+  const handleGPTClick = () => {
+    dispatch(toggleGPTSearchView());
+  };
+
+  /* ---------- UI ---------- */
+  return (
+    <header className="fixed top-0 left-0 w-full z-[1000] bg-gradient-to-b from-black px-24 py-4 flex justify-between items-center">
+      {/* Logo */}
+      <img
+        src="./appName.png"
+        alt="App Logo"
+        className="w-40 object-contain cursor-pointer"
+      />
+
+      {/* Right Section */}
       {user && (
-        <div className="relative">
+        <div className="flex items-center gap-6 relative pt-6" ref={menuRef}>
+          {/* Language Dropdown */}
+          {showGPTSearch && <LanguageSelector />}
+
+          {/* GPT Icon */}
+          <img
+            src="./gptIcon.png"
+            alt="GPT Search"
+            className="w-9 h-9 cursor-pointer hover:-rotate-180 transition-transform duration-600"
+            onClick={() => handleGPTClick()}
+          />
+
+          {/* User Icon */}
           <img
             src="./userIcon.png"
-            alt="user-icon"
-            className="w-10 h10 p-1 my-2 bg-yellow-500 rounded-md cursor-pointer"
-            onClick={handleUserActive}
+            alt="User Profile"
+            className="w-10 h-10 rounded bg-yellow-500 p-1 cursor-pointer"
+            onClick={() => setIsMenuOpen((prev) => !prev)}
           />
-          {/* {user && } */}
-          {isUserActive && (
-            <div className="absolute right-0 mt-2 p-2 bg-black text-white rounded-md w-40">
-              <h2 className="font-bold my-2 p-2">{user?.displayName}</h2>
-              <h4 className="text-sm p-2 my-1 cursor-pointer">Account</h4>
+
+          {/* Dropdown */}
+          {isMenuOpen && (
+            <div className="absolute right-0 top-14 w-48 bg-black text-white rounded shadow-lg">
+              <div className="px-4 py-3 border-b border-gray-400">
+                <p className="font-semibold">{user.displayName}</p>
+              </div>
+
               <button
-                className="text-sm p-2 py-3 cursor-pointer border-t w-full flex"
+                className="w-full flex items-center px-4 py-3 text-sm hover:bg-gray-700"
                 onClick={handleSignOut}
               >
-                <img
-                  src="./logout.png"
-                  alt="logout-icon"
-                  className="w-5 h-5 mr-3"
-                />
+                <img src="./logout.png" alt="Logout" className="w-4 h-4 mr-3" />
                 Sign Out
               </button>
             </div>
           )}
         </div>
       )}
-    </div>
+    </header>
   );
 };
 
