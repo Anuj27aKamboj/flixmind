@@ -18,3 +18,4 @@ export const SUPPORRTED_LANGUAGES = [{identifier:"en", name:"English"},
   {identifier:"de", name:"German"},
 ]
 
+

@@ -4,14 +4,14 @@ import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser, removeUser } from "../utils/userSlice";
-import { toggleGPTSearchView } from "../utils/gptSlice";
+import { toggleGeminiSearchView, removeGeminiMovieResult } from "../utils/geminiSlice";
 import LanguageSelector from "./LanguageSelector";
 
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((store) => store.user);
-  const showGPTSearch = useSelector((store) => store.gpt.showGPTSearch);
+  const showGeminiSearch = useSelector((store) => store.gemini.showGeminiSearch);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -50,8 +50,9 @@ const Header = () => {
       .catch(() => navigate("/error"));
   };
 
-  const handleGPTClick = () => {
-    dispatch(toggleGPTSearchView());
+  const handleGeminiClick = () => {
+    dispatch(toggleGeminiSearchView());
+    dispatch(removeGeminiMovieResult());
   };
 
   /* ---------- UI ---------- */
@@ -68,14 +69,14 @@ const Header = () => {
       {user && (
         <div className="flex items-center gap-6 relative pt-6" ref={menuRef}>
           {/* Language Dropdown */}
-          {showGPTSearch && <LanguageSelector />}
+          {showGeminiSearch && <LanguageSelector />}
 
           {/* GPT Icon */}
           <img
             src="./gptIcon.png"
-            alt="GPT Search"
+            alt="Gemini Search"
             className="w-9 h-9 cursor-pointer hover:-rotate-180 transition-transform duration-600"
-            onClick={() => handleGPTClick()}
+            onClick={() => handleGeminiClick()}
           />
 
           {/* User Icon */}
