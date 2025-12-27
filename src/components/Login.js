@@ -8,7 +8,7 @@ const Login = () => {
     <div>
       <Header />
       <div className="absolute">
-        <img src="./appBackground.jpg" alt="app-background" />
+        <img className="h-screen object-cover" src="./appBackground.jpg" alt="app-background" />
       </div>
       <SignInForm />
       {/* <form className="absolute bg-black p-12 w-3/12 my-40 mx-auto right-0 left-0 rounded-md bg-opacity-80 text-white">

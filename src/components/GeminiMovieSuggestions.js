@@ -10,7 +10,7 @@ const GeminiMovieSuggestions = () => {
   // Add shimmer UI
 
   return (
-    <div className='absolute mt-[20%] w-1/2 z-10 ml-[25%] text-white bg-black bg-opacity-75 rounded-md p-6 mx-auto items-center'>
+    <div className='absolute mt-[70%] md:mt-[20%] w-[90%] md:w-1/2 ml-5 md:ml-[25%] z-10 text-white bg-black bg-opacity-75 rounded-md p-6 mx-auto items-center'>
       {geminiMovieNames.map((movieName,index)=> <MovieList key={movieName} title={movieName} movies={geminiMovieResults[index]}/>)}
     </div>
   )

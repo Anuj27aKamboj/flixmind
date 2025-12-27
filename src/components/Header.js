@@ -26,11 +26,6 @@ const Header = () => {
         dispatch(removeUser());
         navigate("/");
       }
-
-      console.log("ENV CHECK", {
-  key: process.env.REACT_APP_TMDB_KEY,
-  token: process.env.REACT_APP_TMDB_TOKEN,
-});
     });
 
     return () => unsubscribe();
@@ -62,7 +57,7 @@ const Header = () => {
 
   /* ---------- UI ---------- */
   return (
-    <header className="fixed top-0 left-0 w-full z-[1000] bg-gradient-to-b from-black px-24 py-4 flex justify-between items-center">
+    <header className="fixed top-0 left-0 w-full z-[1000] bg-gradient-to-b from-black px-24 py-6 flex flex-col md:flex-row justify-between items-center">
       {/* Logo */}
       <img
         src="./appName.png"
@@ -72,7 +67,7 @@ const Header = () => {
 
       {/* Right Section */}
       {user && (
-        <div className="flex items-center gap-6 relative pt-6" ref={menuRef}>
+        <div className="flex gap-6 justify-between relative pt-4" ref={menuRef}>
           {/* Language Dropdown */}
           {showGeminiSearch && <LanguageSelector />}
 
@@ -80,7 +75,7 @@ const Header = () => {
           <img
             src="./gptIcon.png"
             alt="Gemini Search"
-            className="w-9 h-9 cursor-pointer hover:-rotate-180 transition-transform duration-600"
+            className="w-9 h-9 mx-2 cursor-pointer hover:-rotate-180 transition-transform duration-600"
             onClick={() => handleGeminiClick()}
           />
 
@@ -88,13 +83,13 @@ const Header = () => {
           <img
             src="./userIcon.png"
             alt="User Profile"
-            className="w-10 h-10 rounded bg-yellow-500 p-1 cursor-pointer"
+            className="w-10 h-10 mx-2 rounded bg-yellow-500 p-1 cursor-pointer"
             onClick={() => setIsMenuOpen((prev) => !prev)}
           />
 
           {/* Dropdown */}
           {isMenuOpen && (
-            <div className="absolute right-0 top-14 w-48 bg-black text-white rounded shadow-lg">
+            <div className="absolute right-0 top-14 w-48 mt-5 bg-black text-white rounded shadow-lg">
               <div className="px-4 py-3 border-b border-gray-400">
                 <p className="font-semibold">{user.displayName}</p>
               </div>

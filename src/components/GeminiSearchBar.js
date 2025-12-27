@@ -69,7 +69,7 @@ const GeminiSearchBar = () => {
   };
 
   return (
-    <div className="absolute mt-[10%] w-1/2 z-10 ml-[25%]">
+    <div className="absolute mt-[40%] md:mt-[10%] w-[90%] md:w-1/2 ml-5 md:ml-[25%]">
       <form
         className="bg-black bg-opacity-80 text-white py-4 px-2 rounded-md grid grid-cols-12"
         onSubmit={(e) => e.preventDefault()}

@@ -94,7 +94,7 @@ const SignInForm = () => {
     <div>
       <form
         onSubmit={(e) => e.preventDefault()}
-        className="absolute bg-black p-12 w-3/12 my-40 mx-auto right-0 left-0 rounded-md bg-opacity-80 text-white"
+        className="absolute bg-black p-12 w-[90%] md:w-3/12 my-40 mx-auto right-0 left-0 rounded-md bg-opacity-80 text-white"
       >
         <h1 className="text-white text-3xl font-bold mx-3 my-4">
           {isSignIn ? "Sign In" : "Sign Up"}
@@ -104,7 +104,7 @@ const SignInForm = () => {
             ref={fullName}
             type="text"
             placeholder="Full Name"
-            className="p-3 mx-3 my-2 rounded-md w-full bg-gray-300 text-black placeholder-gray-600"
+            className="p-3 mx-3 my-2 rounded-md w-full bg-gray-300 text-black placeholder-gray-600 text-sm"
           />
         )}
         <input
