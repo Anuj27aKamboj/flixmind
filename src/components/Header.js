@@ -26,6 +26,11 @@ const Header = () => {
         dispatch(removeUser());
         navigate("/");
       }
+
+      console.log("ENV CHECK", {
+  key: process.env.REACT_APP_TMDB_KEY,
+  token: process.env.REACT_APP_TMDB_TOKEN,
+});
     });
 
     return () => unsubscribe();
