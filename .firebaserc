@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "flixmind"
-  }
+    "default": "flixmind-auth",
+    "auth": "flixmind-auth"
+  },
+  "targets": {},
+  "etags": {}
 }

@@ -1,72 +1,65 @@
 import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import lang from "../utils/languageConstants";
-import client from "../utils/genai";
 import { QUERY_PROMPT } from "../utils/queryPrompt";
-import { API_OPTIONS } from "../utils/constants";
 import { addGeminiMovieResult } from "../utils/geminiSlice";
+import { GEMINI_API_FUNCTION,TMDB_API_FUNCTION } from "../utils/constants";
 
 const GeminiSearchBar = () => {
   const langKey = useSelector((store) => store.config.lang);
   const searchText = useRef(null);
   const dispatch = useDispatch();
 
-  const searchGeminiAPI = async (movie) => {
-    const data = await fetch(
-      "https://api.themoviedb.org/3/search/movie?query=" +
-        movie +
-        "&include_adult=false&language=en-US&page=1",
-      API_OPTIONS
+  const searchTMDB = async (movie) => {
+    const response = await fetch(
+      `https://us-central1-flixmind-auth.cloudfunctions.net/tmdbProxy?q=${encodeURIComponent(
+        movie
+      )}`
     );
-    const json = await data.json();
 
+    if (!response.ok) {
+      throw new Error("TMDB proxy failed");
+    }
+
+    const json = await response.json();
     return json.results;
   };
 
   const handleGeminiSearchClick = async () => {
-    console.log(searchText.current.value);
-    //   const response = await genAI.models.list();
-    //   console.log(response);
+  const response = await fetch(
+    GEMINI_API_FUNCTION,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        prompt: QUERY_PROMPT + searchText.current.value,
+      }),
+    }
+  );
 
-    const geminiAPIResponse = await client.models.generateContent({
-      model: "models/gemini-flash-lite-latest",
-      contents: [
-        {
-          role: "user",
-          parts: [{ text: QUERY_PROMPT + searchText.current.value }],
-        },
-      ],
-    });
+  if (!response.ok) {
+    throw new Error("Gemini proxy failed");
+  }
 
-    const parsedResponse = JSON.parse(geminiAPIResponse.text);
+  const data = await response.json();
+  const parsedResponse = JSON.parse(data.text);
 
-    console.log(parsedResponse);
+  const searchAPIData = parsedResponse.map((movieTitle) =>
+    searchTMDB(movieTitle)
+  );
 
-    const searchAPIData = parsedResponse.map((movieTitle) =>
-      searchGeminiAPI(movieTitle)
-    );
+  const tmdbResult = await Promise.all(searchAPIData);
 
-    const tmdbResult = await Promise.all(searchAPIData);
+  dispatch(
+    addGeminiMovieResult({
+      geminiMovieNames: parsedResponse,
+      geminiMovieResults: tmdbResult,
+    })
+  );
+};
 
-    console.log(tmdbResult);
-
-    // const filtereTMDBResults = tmdbResult.map((results, index) =>
-    //   results.filter(
-    //     (movie) =>
-    //       movie.title.trim().toLowerCase() ===
-    //       parsedResponse[index].trim().toLowerCase()
-    //   )
-    // );
-
-    // console.log(filtereTMDBResults);
-
-    dispatch(
-      addGeminiMovieResult({
-        geminiMovieNames: parsedResponse,
-        geminiMovieResults: tmdbResult,
-      })
-    );
-  };
 
   return (
     <div className="absolute mt-[40%] md:mt-[10%] w-[90%] md:w-1/2 ml-5 md:ml-[25%]">
