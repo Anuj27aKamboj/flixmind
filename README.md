@@ -1,75 +1,144 @@
-# Getting Started with Create React App
+![React](https://img.shields.io/badge/React-18-blue?logo=react)
+![Firebase](https://img.shields.io/badge/Firebase-Hosting%20%7C%20Functions-orange?logo=firebase)
+![Node](https://img.shields.io/badge/Node.js-20-green?logo=node.js)
+![License](https://img.shields.io/badge/License-MIT-brightgreen)
+![Status](https://img.shields.io/badge/Status-Production--Ready-success)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# 🎬 FlixMind — AI-Powered Movie Recommendation App (React + Firebase + Gemini)
+🚀 **[View Live App](https://flixmind-auth.web.app)**
 
-## Available Scripts
 
-In the project directory, you can run:
+## 🔎 Keywords
 
-### `npm start`
+AI Movie Recommendation App, React Movie App, Firebase Cloud Functions, TMDB API Proxy, Google Gemini AI, Secure API Architecture, Full Stack React Project, Firebase Hosting App, AI Search Interface
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🚀 Key Features
 
-### `npm test`
+- 🔍 **AI Movie Recommendations**
+  - Uses Google Gemini to generate intelligent movie suggestions based on natural language queries
+  - Converts AI output into real TMDB movie data for accurate results
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- 🎥 **Real-Time Movie Data**
+  - Now Playing movies
+  - Popular movies
+  - Movie trailers (YouTube-ready metadata)
 
-### `npm run build`
+- 🔐 **Enterprise-Grade API Security**
+  - All API keys are fully hidden
+  - No secrets exposed in frontend or build output
+  - Uses Firebase Cloud Functions as secure API proxies
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- 🌐 **Fully Deployed & Scalable**
+  - Frontend hosted on Firebase Hosting
+  - Backend powered by Firebase Functions (Gen 2)
+  - Production-ready CORS handling
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 🏗 System Architecture
 
-### `npm run eject`
+```text
+┌────────────────────┐
+│   React Frontend   │
+│  (Firebase Hosting)│
+└─────────┬──────────┘
+          │ HTTPS
+          ▼
+┌──────────────────────────┐
+│ Firebase Cloud Functions │
+│  (Node.js 20, Gen 2)     │
+│                          │
+│  ┌───────────────────┐  │
+│  │ tmdbProxy         │──┼──▶ TMDB API
+│  │ (Bearer Token)    │  │
+│  └───────────────────┘  │
+│                          │
+│  ┌───────────────────┐  │
+│  │ geminiProxy       │──┼──▶ Google Gemini API
+│  │ (API Key)         │  │
+│  └───────────────────┘  │
+│                          │
+│ Secrets via Firebase     │
+│ Secret Manager           │
+└──────────────────────────┘
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Why this architecture?
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- Prevents API key leakage
+- Enables centralized error handling
+- Allows future caching and rate-limiting
+- Matches real-world production patterns
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
+## 🛠 Tech Stack
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Frontend
+- React 18
+- Redux Toolkit
+- Custom Hooks architecture
+- Tailwind CSS
+- Firebase Authentication
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Backend
+- Firebase Cloud Functions (Node.js 20, Gen 2)
+- Google Gemini API
+- TMDB API
+- Firebase Secret Manager
+- CORS middleware
 
 ### Deployment
+- Firebase Hosting
+- Firebase Functions
+- Firebase CLI
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+---
 
-### `npm run build` fails to minify
+## 🔑 Security Design
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- ❌ No `.env` file in frontend
+- ❌ No API keys in source code
+- ✅ All secrets stored in Firebase Secret Manager
+- ✅ Secrets injected securely at runtime
+- ✅ Requests validated and routed via backend
 
+This mirrors how sensitive APIs are handled in professional production environments.
 
+---
 
+## 🔁 API Proxies
 
-https://flixmind.web.app/
+### TMDB Proxy
+
+Routes:
+- `/tmdbProxy/popular`
+- `/tmdbProxy/now-playing`
+- `/tmdbProxy/trailer?movieId=ID`
+- `/tmdbProxy?q=searchTerm`
+
+### Gemini Proxy
+
+- Accepts user prompt
+- Calls Gemini using server-side API key
+- Returns parsed, structured output
+
+---
+
+## 🧪 Local Development
+
+```bash
+# Frontend
+npm install
+npm start
+
+# Cloud Functions
+cd functions
+npm install
+firebase emulators:start --only functions
+
+# Build frontend
+npm run build
+
+# Deploy everything
+firebase deploy
