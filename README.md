@@ -1,144 +1,120 @@
+# 🎬 FlixMind — AI-Powered Movie Discovery App
+
 ![React](https://img.shields.io/badge/React-18-blue?logo=react)
-![Firebase](https://img.shields.io/badge/Firebase-Hosting%20%7C%20Functions-orange?logo=firebase)
-![Node](https://img.shields.io/badge/Node.js-20-green?logo=node.js)
+![Firebase](https://img.shields.io/badge/Firebase-Hosting-orange?logo=firebase)
+![Vercel](https://img.shields.io/badge/Vercel-Serverless-black?logo=vercel)
 ![License](https://img.shields.io/badge/License-MIT-brightgreen)
 ![Status](https://img.shields.io/badge/Status-Production--Ready-success)
 
-# 🎬 FlixMind — AI-Powered Movie Recommendation App (React + Firebase + Gemini)
-🚀 **[View Live App](https://flixmind-auth.web.app)**
-
-
-## 🔎 Keywords
-
-AI Movie Recommendation App, React Movie App, Firebase Cloud Functions, TMDB API Proxy, Google Gemini AI, Secure API Architecture, Full Stack React Project, Firebase Hosting App, AI Search Interface
-
-
-## 🚀 Key Features
-
-- 🔍 **AI Movie Recommendations**
-  - Uses Google Gemini to generate intelligent movie suggestions based on natural language queries
-  - Converts AI output into real TMDB movie data for accurate results
-
-- 🎥 **Real-Time Movie Data**
-  - Now Playing movies
-  - Popular movies
-  - Movie trailers (YouTube-ready metadata)
-
-- 🔐 **Enterprise-Grade API Security**
-  - All API keys are fully hidden
-  - No secrets exposed in frontend or build output
-  - Uses Firebase Cloud Functions as secure API proxies
-
-- 🌐 **Fully Deployed & Scalable**
-  - Frontend hosted on Firebase Hosting
-  - Backend powered by Firebase Functions (Gen 2)
-  - Production-ready CORS handling
-
-
-## 🏗 System Architecture
-
-```text
-┌────────────────────┐
-│   React Frontend   │
-│  (Firebase Hosting)│
-└─────────┬──────────┘
-          │ HTTPS
-          ▼
-┌──────────────────────────┐
-│ Firebase Cloud Functions │
-│  (Node.js 20, Gen 2)     │
-│                          │
-│  ┌───────────────────┐  │
-│  │ tmdbProxy         │──┼──▶ TMDB API
-│  │ (Bearer Token)    │  │
-│  └───────────────────┘  │
-│                          │
-│  ┌───────────────────┐  │
-│  │ geminiProxy       │──┼──▶ Google Gemini API
-│  │ (API Key)         │  │
-│  └───────────────────┘  │
-│                          │
-│ Secrets via Firebase     │
-│ Secret Manager           │
-└──────────────────────────┘
-
-
-### Why this architecture?
-
-- Prevents API key leakage
-- Enables centralized error handling
-- Allows future caching and rate-limiting
-- Matches real-world production patterns
+🚀 **[View Live App](https://flixmind-auth.web.app)** · **[API Repo](https://github.com/Anuj27aKamboj/flixmind-api)**
 
 ---
 
-## 🛠 Tech Stack
+## What it does
 
-### Frontend
-- React 18
-- Redux Toolkit
-- Custom Hooks architecture
+FlixMind lets users discover movies through natural language. Type "something like Interstellar but darker" and Gemini AI interprets the query, generates movie suggestions, and fetches real TMDB data for each result — posters, ratings, trailers included.
+
+---
+
+## Features
+
+- **AI Movie Search** — Natural language queries processed by Google Gemini, results resolved against TMDB
+- **Now Playing & Popular** — Live movie data from TMDB
+- **Trailer Playback** — YouTube-ready trailer metadata per movie
+- **Firebase Auth** — Email/password authentication with protected routes
+- **Multi-language UI** — Language selector with i18n support
+
+---
+
+## Architecture
+
+```
+┌────────────────────────┐
+│    React Frontend      │
+│   (Firebase Hosting)   │
+└───────────┬────────────┘
+            │ HTTPS
+            ▼
+┌────────────────────────┐
+│   Vercel Serverless    │
+│    (flixmind-api)      │
+│                        │
+│  /api/popular      ────┼──▶ TMDB API
+│  /api/now-playing  ────┼──▶ TMDB API
+│  /api/trailer      ────┼──▶ TMDB API
+│  /api/search       ────┼──▶ TMDB API
+│  /api/gemini       ────┼──▶ Google Gemini API
+│                        │
+│  Secrets via Vercel    │
+│  Environment Variables │
+└────────────────────────┘
+```
+
+The React frontend never touches TMDB or Gemini directly. All external API calls are proxied through Vercel serverless functions, keeping both the TMDB Bearer token and Gemini API key fully server-side.
+
+---
+
+## Tech Stack
+
+**Frontend**
+- React 18, Redux Toolkit
 - Tailwind CSS
 - Firebase Authentication
+- Custom hooks for data fetching
 
-### Backend
-- Firebase Cloud Functions (Node.js 20, Gen 2)
-- Google Gemini API
-- TMDB API
-- Firebase Secret Manager
-- CORS middleware
+**Backend** — [`flixmind-api`](https://github.com/Anuj27aKamboj/flixmind-api)
+- Vercel Serverless Functions (Node.js 18)
+- Google Gemini API (`gemini-2.5-flash`)
+- TMDB API (Bearer token auth)
 
-### Deployment
-- Firebase Hosting
-- Firebase Functions
-- Firebase CLI
+**Deployment**
+- Firebase Hosting (frontend)
+- Vercel (API layer)
 
 ---
 
-## 🔑 Security Design
+## API Routes
 
-- ❌ No `.env` file in frontend
-- ❌ No API keys in source code
-- ✅ All secrets stored in Firebase Secret Manager
-- ✅ Secrets injected securely at runtime
-- ✅ Requests validated and routed via backend
+All routes live at `https://flixmind-api.vercel.app/api`
 
-This mirrors how sensitive APIs are handled in professional production environments.
-
----
-
-## 🔁 API Proxies
-
-### TMDB Proxy
-
-Routes:
-- `/tmdbProxy/popular`
-- `/tmdbProxy/now-playing`
-- `/tmdbProxy/trailer?movieId=ID`
-- `/tmdbProxy?q=searchTerm`
-
-### Gemini Proxy
-
-- Accepts user prompt
-- Calls Gemini using server-side API key
-- Returns parsed, structured output
+| Route | Method | Description |
+|---|---|---|
+| `/popular` | GET | Popular movies from TMDB |
+| `/now-playing` | GET | Currently in theatres |
+| `/trailer?movieId=ID` | GET | Trailer metadata for a movie |
+| `/search?q=term` | GET | Search TMDB by title |
+| `/gemini` | POST | Natural language → movie list via Gemini |
 
 ---
 
-## 🧪 Local Development
+## Security
+
+- TMDB Bearer token stored in Vercel environment variables — never in the bundle
+- Gemini API key stored in Vercel environment variables — never in the bundle
+- `.env` excluded from version control via `.gitignore`
+- Firebase API key restricted by HTTP referrer in Google Cloud Console
+
+---
+
+## Local Development
 
 ```bash
-# Frontend
+# Install dependencies
 npm install
+
+# Start dev server
 npm start
+```
 
-# Cloud Functions
-cd functions
-npm install
-firebase emulators:start --only functions
+Create a `.env` file in the project root — this is only needed if running the Gemini proxy locally. For local development, the app points to the deployed Vercel API by default via `TMDB_API_FUNCTION` in `constants.js`.
 
-# Build frontend
+```bash
+# Production build
 npm run build
 
-# Deploy everything
+# Deploy to Firebase Hosting
+firebase deploy --only hosting
+```
+
+For the API layer, see the [flixmind-api repo](https://github.com/Anuj27aKamboj/flixmind-api).
 firebase deploy
