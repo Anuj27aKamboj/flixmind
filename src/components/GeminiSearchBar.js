@@ -1,6 +1,5 @@
 import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { GoogleGenAI } from "@google/genai";
 import lang from "../utils/languageConstants";
 import { QUERY_PROMPT } from "../utils/queryPrompt";
 import { addGeminiMovieResult } from "../utils/geminiSlice";
@@ -13,7 +12,7 @@ const GeminiSearchBar = () => {
 
   const searchTMDB = async (movie) => {
     const response = await fetch(
-      `${TMDB_API_FUNCTION}/search?q=${encodeURIComponent(movie)}`
+      `${TMDB_API_FUNCTION}/search?q=${encodeURIComponent(movie)}`,
     );
     if (!response.ok) throw new Error("TMDB search failed");
     const json = await response.json();
@@ -21,33 +20,32 @@ const GeminiSearchBar = () => {
   };
 
   const handleGeminiSearchClick = async () => {
-  try {
-    const ai = new GoogleGenAI({
-      apiKey: process.env.REACT_APP_GEMINI_API_KEY,
-    });
+    try {
+      const response = await fetch(`${TMDB_API_FUNCTION}/gemini`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt: QUERY_PROMPT + searchText.current.value,
+        }),
+      });
 
-    const result = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: QUERY_PROMPT + searchText.current.value,
-    });
+      const { text } = await response.json();
+      const parsedResponse = JSON.parse(text);
 
-    const text = result.text;
-    const parsedResponse = JSON.parse(text);
+      const tmdbResult = await Promise.all(
+        parsedResponse.map((movieTitle) => searchTMDB(movieTitle)),
+      );
 
-    const tmdbResult = await Promise.all(
-      parsedResponse.map((movieTitle) => searchTMDB(movieTitle))
-    );
-
-    dispatch(
-      addGeminiMovieResult({
-        geminiMovieNames: parsedResponse,
-        geminiMovieResults: tmdbResult,
-      })
-    );
-  } catch (err) {
-    console.error("Gemini search failed:", err);
-  }
-};
+      dispatch(
+        addGeminiMovieResult({
+          geminiMovieNames: parsedResponse,
+          geminiMovieResults: tmdbResult,
+        }),
+      );
+    } catch (err) {
+      console.error("Gemini search failed:", err);
+    }
+  };
 
   return (
     <div className="absolute mt-[40%] md:mt-[10%] w-[90%] md:w-1/2 ml-5 md:ml-[25%]">
