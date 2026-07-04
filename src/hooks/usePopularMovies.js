@@ -17,6 +17,7 @@ const usePopularMovies = () => {
 
   useEffect(() => {
     if (!popularMovies) fetchPopular();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 };
 
